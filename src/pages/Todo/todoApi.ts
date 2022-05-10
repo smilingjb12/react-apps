@@ -1,4 +1,4 @@
-import { TodoItem } from "./state";
+import { TodoItem } from "./todoSlice";
 
 function fetchTodos(): Promise<TodoItem[]> {
   return new Promise(resolve => {

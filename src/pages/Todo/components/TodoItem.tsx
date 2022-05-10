@@ -1,32 +1,22 @@
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { Checkbox, IconButton, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
-import produce from "immer";
 import { FC, ReactElement } from "react";
-import { useRecoilState } from "recoil";
-import { useTodoService } from "../actions";
-import { TodoItem as TodoItemModel, todoState } from "../state";
+import { useAppDispatch } from "../../../hooks";
+import { actions, TodoItem as TodoItemModel } from "../todoSlice";
 
 interface Props {
   item: TodoItemModel;
 }
 
 const TodoItem: FC<Props> = ({ item }: Props): ReactElement => {
-  const [state, setState] = useRecoilState(todoState);
-  const todoService = useTodoService();
+  const dispatch = useAppDispatch();
 
   const removeItem = (item: TodoItemModel): void => {
-    setState(oldState => produce(oldState, draft => {
-      draft.items = draft.items.filter(i => i.id !== item.id);
-    }));
-    todoService.deleteTodo(item.id);
+    dispatch(actions.deleteTodo({ id: item.id }));
   };
 
   const toggleTodo = (item: TodoItemModel): void => {
-    setState(oldState => produce(oldState, draft => {
-      const todo = draft.items.find(i => i.id === item.id)!;
-      todo.isDone = !todo.isDone;
-    }));
-    todoService.toggleTodo(item.id);
+    dispatch(actions.toggleTodo({ id: item.id }));
   };
 
   return (

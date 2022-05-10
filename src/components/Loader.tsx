@@ -13,7 +13,6 @@ const Loader: FC<{}> = (): ReactElement => {
     }}>
       <CircularProgress />
     </Box>
-
   );
 };
 

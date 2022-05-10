@@ -1,15 +1,13 @@
 import { TextField } from "@mui/material";
 import React, { FC, ReactElement, useState } from "react";
-import { useRecoilState } from "recoil";
 import Loader from "../../../components/Loader";
-import { useTodoService } from "../actions";
-import { todoState } from "../state";
+import { useAppDispatch } from "../../../hooks";
+import { actions } from "../todoSlice";
 
 const TodoInput: FC<{}> = (): ReactElement => {
-  const [_, setState] = useRecoilState(todoState);
   const [text, setText] = useState('');
   const [postingEmptyText, setPostingEmptyText] = useState(false);
-  const todoService = useTodoService();
+  const dispatch = useAppDispatch();
 
   const handleTextChange = (event: any): void => {
     setText(event.target.value);
@@ -27,7 +25,7 @@ const TodoInput: FC<{}> = (): ReactElement => {
       } else {
         setPostingEmptyText(false);
       }
-      todoService.createTodo(text);
+      dispatch(actions.createTodo({ text }));
       setText('');
     }
   };

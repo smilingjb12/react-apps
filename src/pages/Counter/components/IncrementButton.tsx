@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import { FC, ReactElement } from "react";
-import { useRecoilState } from "recoil";
-import { counterState } from "../state";
+import { useAppDispatch } from "../../../hooks";
+import { actions } from '../counterSlice';
 
 interface Props {
   label: string;
@@ -9,13 +9,10 @@ interface Props {
 }
 
 const IncrementButton: FC<Props> = (props: Props): ReactElement => {
-  const [state, setState] = useRecoilState(counterState);
+  const dispatch = useAppDispatch();
 
-  const incrementCount = (increment: number): void => {
-    setState(oldState => ({
-      count: oldState.count + increment,
-      clicks: oldState.clicks + 1
-    }));
+  const incrementCount = (diff: number): void => {
+    dispatch(diff > 0 ? actions.increment() : actions.decrement());
   };
 
   return (

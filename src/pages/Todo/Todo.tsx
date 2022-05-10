@@ -1,15 +1,17 @@
-import { Box, Chip, Container, List } from "@mui/material";
-import React, { FC, ReactElement } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
-import Loader from "../../components/Loader";
+import { Box, Container } from "@mui/material";
+import React, { FC, ReactElement, useEffect } from "react";
+import { useAppDispatch } from "../../hooks";
 import TodoInput from "./components/TodoInput";
-import TodoItem from "./components/TodoItem";
-import { todoInfo } from "./selectors";
-import { todoState } from "./state";
+import TodoList from "./components/TodoList";
+import TodoStats from "./components/TodoStats";
+import { actions } from './todoSlice';
 
 const Todo: FC<{}> = (): ReactElement => {
-  const info = useRecoilValue(todoInfo);
-  const [state, setState] = useRecoilState(todoState);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(actions.fetchTodos());
+  }, []);
 
   return (
     <Container sx={{
@@ -32,26 +34,9 @@ const Todo: FC<{}> = (): ReactElement => {
         justifyContent: 'flex-start',
       }}>
         <TodoInput />
-        <React.Suspense fallback={<Loader />}>
-          <List sx={{
-            width: '100%',
-            bgColor: 'background.paper',
-            overflow: 'auto',
-            maxHeight: '60vh'
-          }}>
-            {info.todos.map(item => (<TodoItem key={item.id} item={item} />))}
-          </List>
-        </React.Suspense>
+        <TodoList />
       </Box>
-
-      <Box sx={{
-        display: 'flex',
-        justifyContent: 'flex-end',
-        width: '100%'
-      }}>
-        <Chip sx={{ marginRight: '0.5rem' }} label={`Total: ${info.total}`} variant="outlined" />
-        <Chip label={`Remaining: ${info.remaining}`} variant="outlined" />
-      </Box>
+      <TodoStats />
     </Container>
   );
 }

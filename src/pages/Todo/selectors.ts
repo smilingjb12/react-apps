@@ -1,26 +1,13 @@
-import { selector } from "recoil";
-import { todoApi } from "./backend";
-import { todoState } from "./state";
+import { useAppSelector } from "../../hooks";
 
-export const todoInfo = selector({
-  key: 'todoInfo',
-  get: ({ get }) => {
+export function useTodoSelectors() {
+  const info = useAppSelector(state => ({
+    total: state.todo.items.length,
+    remaining: state.todo.items.filter(i => !i.isDone).length,
+    todos: state.todo.items
+  }));
 
-    const remainingItems = get(todoState).items.filter(i => !i.isDone).length;
+  const isLoadingTodos = useAppSelector(state => state.todo.loading);
 
-    return {
-      todos: get(todoState).items,
-      remaining: remainingItems,
-      total: get(todoState).items.length
-    };
-  }
-});
-
-export const todoListQuery = selector({
-  key: 'todoListQuery',
-  get: async ({ get }) => {
-    const items = await todoApi.fetchTodos();
-
-    return items;
-  }
-});
+  return { info, isLoadingTodos };
+}
